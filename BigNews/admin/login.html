@@ -78,6 +78,7 @@
             console.log(backData);
       //   失败：弹出提示用户
             alert(backData.msg)
+            localStorage.setItem('token',backData.token)
             if(backData.code==200){
       //   成功：跳转首页
               window.location.href='./index.html'
