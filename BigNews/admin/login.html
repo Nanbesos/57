@@ -56,6 +56,7 @@
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
   </div><!-- /.modal -->
+  <script src="./libs/hppt.js"></script>
   <script>
     // 入口函数
     $(function () {
@@ -85,7 +86,8 @@
           // 那么项目的基地址就是:http://localhost:8080/api/v1
           // 基地址+端口+/api/vi
           $.ajax({
-            url: 'http://localhost:8080/api/v1/admin/user/login',
+            // 用户登录
+            url: BigNew.user_login,
             type: 'post',
             dataType: 'json',
             data: {
