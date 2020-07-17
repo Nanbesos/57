@@ -72,6 +72,34 @@
             </div>
         </div>
     </div>
+    <script src="./libs/hppt.js"></script>
+    <script id="article_list" type="text/html">
+        {{each}}
+        <tr>
+            <td>王积千造统最头</td>
+            <td>杰克</td>
+            <td>奇趣事</td>
+            <td class="text-center">2017-06-08 07:08:46</td>
+            <td class="text-center">已发布</td>
+            <td class="text-center">
+                <a href="article_edit.html" class="btn btn-default btn-xs">编辑</a>
+                <a href="javascript:void(0);" class="btn btn-danger btn-xs delete">删除</a>
+            </td>
+        </tr>
+        {{/each}}
+    </script>
+    <script>
+        // $(function(){
+        //     $.ajax({
+        //         url:BigNew.category_list,
+        //         type:'get',
+        //         dataType:'json',
+        //         success: function(backData){
+        //             console.log(backData);
+        //         }
+        //     });
+        // })
+    </script>
 </body>
 
 </html>
