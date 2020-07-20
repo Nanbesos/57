@@ -160,6 +160,37 @@
 
     </div>
   </div>
+  <script src="./libs/hppt.js"></script>
+  <!-- 评论列表模板 -->
+  <script id="comments" type="text/html">
+    {{each data.data v}}
+    <tr>
+      <td>{{v.author}}</td>
+      <td>{{v.content}}</td>
+      <td>{{v.tiltle}}</td>
+      <td>{{v.date}}</td>
+      <td>{{v.state}}</td>
+      <td class="text-center">
+        <a href="javascript:void(0);;" class="btn btn-warning btn-xs">拒绝</a>
+        <a href="javascript:void(0);;" class="btn btn-danger btn-xs">删除</a>
+      </td>
+    </tr>
+    {{/each}}
+  </script>
+  <script>
+    $(function(){
+      // 请求评论列表
+      $.ajax({
+        url:BigNew.comment_list,
+        type:'get',
+        dataType:'json',
+        success: function(backData){
+          console.log(backData);
+          $('tbody').html(template('comments',backData))
+        }
+      });
+    })
+  </script>
 </body>
 
 </html>

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>文章列表</title>
+    <title>编辑文章</title>
     <link rel="stylesheet" href="./libs/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/iconfont.css">
@@ -19,7 +19,7 @@
 <body>
     <div class="container-fluid">
         <div class="common_title">
-            文章编辑
+            编辑文章
         </div>
         <div class="container-fluid common_con">
             <form class="form-horizontal article_form" id="form">
@@ -60,13 +60,93 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-success btn-edit">修改</button>
+                        <button type="submit" class="btn btn-success btn-edit">发表</button>
                         <button type="submit" class="btn btn-default btn-draft">存为草稿</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
+    <script src="./libs/hppt.js"></script>
+    <script id="categoryId" type="text/html">
+        {{each data v}}
+        <option value="{{v.id}}">{{v.name}}</option>
+        {{/each}}
+    </script>
+    <script>
+        $(function () {
+            // 获取要编辑的文章
+            // var articleId=window.location.href.split('=')[1]
+            // console.log(window.location.href.split('=')[1]);
+
+            // 获取种类列表
+            $.ajax({
+                url:BigNew.category_list,
+                type:'get',
+                dataType:'json',
+                success: function(backData){
+                    console.log(backData);
+                    $('select').html(template('categoryId',backData))
+                }
+            });
+            // 获取要编辑文章的ID
+            $.ajax({
+                url: BigNew.article_search,
+                type: 'get',
+                dataType: 'json',
+                data: {
+                    id:window.location.href.split('=')[1]
+                },
+                success: function (backData) {
+                    console.log(backData);
+                    $('.title').val(backData.data.title)
+                    $('.article_cover').attr('src',backData.data.cover)
+                    $('select').val(backData.data.categoryId)
+                }
+            });
+
+            // 文件预览
+            // (1)给表单注册onchange事件: 选择文件就会执行
+            $('#inputCover').change(function () {
+                // (2)获取用户选择的文件: DOMthis.files[0]
+                var file = this.files[0]
+                console.log(file);
+                // (3)根据file文件生成url路径 (img标签src属性是url)
+                var url = URL.createObjectURL(file)
+                // console.log(url);
+                // (4)设置img标签src属性生成的url
+                $('.article_cover').attr('src', url)
+            })
+            // $('.btn-success').click(function (e) {
+            //     e.preventDefault()
+            //     var fd = new FormData($('form')[0]);
+            //     // console.log(fd);
+            //     $.ajax({
+            //         // 用户编辑
+            //         url: BigNew.user_publish,
+            //         type: 'post',
+            //         dataType: 'json',
+            //         data: fd,
+            //         processData: false,
+            //         contentType: false,
+            //         success: function (backData) {
+            //             console.log(backData);
+            //             // if (backData.code == 200) {
+            //             //     $('#myModal').modal()
+            //             //     $('.modal-body>p').text(backData.msg)
+            //             //     $('#myModal').on('hidden.bs.modal', function (e) {
+            //             //     /*注意点
+            //             //     window: 当前页面 user.html,
+            //             //     如果想要使用 window.parent,这种方法一般用于获取iframe标签的父窗口
+            //             //     */
+            //             //         window.parent.location.reload()
+            //             //     })
+            //             // }
+            //         }
+            //     });
+            // })
+        })
+    </script>
 </body>
 
 </html>

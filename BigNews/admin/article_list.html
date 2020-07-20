@@ -25,11 +25,11 @@
                 <div class="col-xs-6">
                     <form class="form-inline">
                         <select id="selCategory" name="" class="form-control input-sm">
-                            <option value="">所有分类</option>
+                            <!-- <option value="">所有分类</option>
                             <option>未分类</option>
                             <option>奇趣事</option>
                             <option>会生活</option>
-                            <option>爱旅行</option>
+                            <option>爱旅行</option> -->
                         </select>
                         <select id="selStatus" name="" class="form-control input-sm">
                             <option value="">所有状态</option>
@@ -55,7 +55,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                    <!-- <tr>
                         <td>王积千造统最头</td>
                         <td>杰克</td>
                         <td>奇趣事</td>
@@ -65,40 +65,86 @@
                             <a href="article_edit.html" class="btn btn-default btn-xs">编辑</a>
                             <a href="javascript:void(0);" class="btn btn-danger btn-xs delete">删除</a>
                         </td>
-                    </tr>
+                    </tr> -->
                 </tbody>
             </table>
             <div class="row text-center">
             </div>
         </div>
     </div>
+    <!-- 网络中间层 -->
     <script src="./libs/hppt.js"></script>
+    <!-- 所有分类模板引擎 -->
     <script id="article_list" type="text/html">
-        {{each}}
+        <option value="">所有分类</option>
+        {{each data v}}
+            <option value="{{v.id}}">{{v.name}}</option>
+        {{/each}}
+    </script>
+    <!-- 文章搜索后渲染列表 -->
+    <script id="article_query" type="text/html">
+        {{each data.data v}}
         <tr>
-            <td>王积千造统最头</td>
-            <td>杰克</td>
-            <td>奇趣事</td>
-            <td class="text-center">2017-06-08 07:08:46</td>
-            <td class="text-center">已发布</td>
+            <td>{{v.title}}</td>
+            <td>{{v.author}}</td>
+            <td>{{v.category}}</td>
+            <td class="text-center">{{v.date}}</td>
+            <td class="text-center">{{v.state}}</td>
             <td class="text-center">
-                <a href="article_edit.html" class="btn btn-default btn-xs">编辑</a>
-                <a href="javascript:void(0);" class="btn btn-danger btn-xs delete">删除</a>
+                <a href="article_edit.html?id={{v.id}}" data-id="{{v.id}}" class="btn btn-default btn-xs">编辑</a>
+                <a href="javascript:void(0);" data-id="{{v.id}}" class="btn btn-danger btn-xs delete">删除</a>
             </td>
         </tr>
         {{/each}}
     </script>
     <script>
-        // $(function(){
-        //     $.ajax({
-        //         url:BigNew.category_list,
-        //         type:'get',
-        //         dataType:'json',
-        //         success: function(backData){
-        //             console.log(backData);
-        //         }
-        //     });
-        // })
+        // 入口函数
+        $(function () {
+            $.ajax({
+                url: BigNew.category_list,
+                type: 'get',
+                dataType: 'json',
+                success: function (backData) {
+                    // console.log(backData);
+                    $('#selCategory').html(template('article_list', backData))
+                }
+            });
+            // 筛选按钮点击事件
+            $('#btnSearch').click(function (e) {
+                e.preventDefault()
+                // console.log($('#selCategory').val());
+                $.ajax({
+                    url: BigNew.article_query,
+                    type: 'get',
+                    dataType: 'json',
+                    data: {
+                        type:$('#selCategory').val(),
+                        state:$('#selStatus').val(),
+                        page:1,
+                        perpage:100,
+                    },
+                    success: function (backData) {
+                        // console.log(backData);
+                        $('tbody').html(template('article_query',backData))
+                    }
+                });
+            })
+            $('#btnSearch').click()
+            $('body').on('click','.delete',function(){
+                console.log($(this).attr('data-id'));
+                // $.ajax({
+                //     url:BigNew.category_delete,
+                //     type:'post',
+                //     dataType:'json',
+                //     data:{
+                //         id:$(this).attr('data-id')
+                //     },
+                //     success: function(backData){
+                //         console.log(backData);
+                //     }
+                // });
+            })
+        })
     </script>
 </body>
 
