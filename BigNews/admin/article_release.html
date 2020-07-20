@@ -14,6 +14,13 @@
     <script src="./libs/jquery-1.12.4.min.js"></script>
     <!-- 模板引擎 -->
     <script src="./libs/template-web.js"></script>
+    <!-- 导入日历控件 -->
+    <link rel="stylesheet" href="./libs/jedate/css/jeDate-test.css">
+    <link rel="stylesheet" href="./libs/jedate/css/jeDate.css">
+    <script src="./libs/jedate/js/jedate.js"></script>
+    <!-- 富文本框 -->
+    <script src="./libs/wangEditor.min.js"></script>
+
 </head>
 
 <body>
@@ -51,11 +58,20 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">发布时间：</label>
                     <div class="col-sm-4">
+                        <!-- 日期插件 -->
+                        <div class="jeinpbox">
+                            <input type="text" class="jeinput" id="testico" placeholder="YYYY-MM-DD">
+                            <div class="icons jebtns"
+                                onclick="jeDate('#testico',{trigger:false,format: 'YYYY-MM-DD',zIndex:10001})">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章内容：</label>
                     <div class="col-sm-10">
+                        <!-- 富文本编辑器 -->
+                        <div id="editor"></div>
                     </div>
                 </div>
                 <div class="form-group">
@@ -67,31 +83,50 @@
             </form>
         </div>
     </div>
-<script src="./libs/hppt.js"></script>
-<script id="categoryId" type="text/html">
+    <script src="./libs/hppt.js"></script>
+    <script id="categoryId" type="text/html">
     {{each data v}}
         <option value="{{v.id}}">{{v.name}}</option>
     {{/each}}
 </script>
-<script>
-    $(function(){
-        $.ajax({
-                url:BigNew.category_list,
-                type:'get',
-                dataType:'json',
-                success: function(backData){
+    <script>
+        $(function () {
+            // 日期插件和编辑器插件初始化
+            jeDate("#testico", {
+                isinitVal: true,//默认显示当前时间
+                festival: true,//显示节假日
+                trigger: 'click',
+                format: "YYYY-MM-DD",
+                minDate: "2014-09-19 00:00:00",
+                zIndex: 10001,//设置日期插件层级高于编辑器层级
+            });
+
+            var E = window.wangEditor;
+            var editor = new E('#editor');
+            // 或者 var editor = new E( document.getElementById('editor') )
+            editor.create();
+            /* 
+            1.发现问题： 日期插件  被 编辑器插件给遮挡
+            2.分析问题： 日期插件层级  小于  编辑器插件层级
+            3.解决问题： 设置日期插件层级  高于 编辑器插件层级
+            */
+            $.ajax({
+                url: BigNew.category_list,
+                type: 'get',
+                dataType: 'json',
+                success: function (backData) {
                     console.log(backData);
-                    $('select').html(template('categoryId',backData))
+                    $('select').html(template('categoryId', backData))
                 }
             });
-            $('#inputCover').change(function(e){
-                var file=this.files[0]
+            $('#inputCover').change(function (e) {
+                var file = this.files[0]
                 console.log(file);
                 // var url=URL.createObjectURL(file)
-                $('.article_cover').attr('src',URL.createObjectURL(file))
+                $('.article_cover').attr('src', URL.createObjectURL(file))
             })
-    })
-</script>
+        })
+    </script>
 </body>
 
 </html>

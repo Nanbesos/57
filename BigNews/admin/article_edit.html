@@ -14,6 +14,12 @@
     <script src="./libs/jquery-1.12.4.min.js"></script>
     <!-- 模板引擎 -->
     <script src="./libs/template-web.js"></script>
+    <!-- 日期控件 -->
+    <link rel="stylesheet" href="./libs/jedate/css/jeDate-test.css">
+    <link rel="stylesheet" href="./libs/jedate/css/jedate.css">
+    <script src="./libs/jedate/js/jedate.js"></script>
+    <!-- 富文本编辑器 -->
+    <script src="./libs/wangEditor.min.js"></script>
 </head>
 
 <body>
@@ -51,13 +57,20 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">发布时间：</label>
                     <div class="col-sm-4">
-                        <!-- 导入分页插件 -->
-                        <ul id="pagination-demo" class="pagination-sm"></ul>
+                        <!-- 日期插件 -->
+                        <div class="jeinpbox">
+                            <input type="text" class="jeinput" id="testico" placeholder="YYYY-MM-DD">
+                            <div class="icons jebtns"
+                                onclick="jeDate('#testico',{trigger:false,format: 'YYYY-MM-DD',zIndex:10001})">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章内容：</label>
                     <div class="col-sm-10">
+                        <!-- 富文本编辑器 -->
+                        <div id="editor"></div>
                     </div>
                 </div>
                 <div class="form-group">
@@ -81,14 +94,44 @@
             // var articleId=window.location.href.split('=')[1]
             // console.log(window.location.href.split('=')[1]);
 
+            // 日期插件和编辑器插件初始化
+            jeDate("#testico", {
+                isinitVal: true,//默认显示当前时间
+                festival: true,//显示节假日
+                trigger: 'click',
+                format: "YYYY-MM-DD",
+                minDate: "2014-09-19 00:00:00",
+                zIndex: 10001,//设置日期插件层级高于编辑器层级
+            });
+
+            var E = window.wangEditor;
+            var editor = new E('#editor');
+            // 或者 var editor = new E( document.getElementById('editor') )
+            editor.create();
+            /* 
+            1.发现问题： 日期插件  被 编辑器插件给遮挡
+            2.分析问题： 日期插件层级  小于  编辑器插件层级
+            3.解决问题： 设置日期插件层级  高于 编辑器插件层级
+            */
+
+            /* 编辑文章页面开发思路
+            0. 先完成日期选择插件jedate 和 文本编辑器插件wangEditor的布局和配置
+
+            1.获取从article_list页面传递过来的文章id
+            2.ajax请求文章所有的分类 (渲染分类下拉菜单)
+            3.ajax请求文章详细信息 （渲染整个页面）
+            4.文件预览
+            5.文件上传 
+            */
+
             // 获取种类列表
             $.ajax({
-                url:BigNew.category_list,
-                type:'get',
-                dataType:'json',
-                success: function(backData){
-                    console.log(backData);
-                    $('select').html(template('categoryId',backData))
+                url: BigNew.category_list,
+                type: 'get',
+                dataType: 'json',
+                success: function (backData) {
+                    // console.log(backData);
+                    $('select').html(template('categoryId', backData))
                 }
             });
             // 获取要编辑文章的ID
@@ -97,13 +140,15 @@
                 type: 'get',
                 dataType: 'json',
                 data: {
-                    id:window.location.href.split('=')[1]
+                    id: window.location.href.split('=')[1]
                 },
                 success: function (backData) {
-                    console.log(backData);
+                    // console.log(backData);
                     $('.title').val(backData.data.title)
-                    $('.article_cover').attr('src',backData.data.cover)
+                    $('.article_cover').attr('src', backData.data.cover)
                     $('select').val(backData.data.categoryId)
+                    $('#testico').val(backData.data.date)
+                    editor.txt.html(backData.data.content)
                 }
             });
 
@@ -119,13 +164,19 @@
                 // (4)设置img标签src属性生成的url
                 $('.article_cover').attr('src', url)
             })
-            $('.btn-success').click(function (e) {
+            $('.btn-edit,.btn-draft').click(function (e) {
                 e.preventDefault()
+                var btnText=$(this).hasClass('btn-edit')?'发表':'草稿'
+                // console.log(btnText);
                 var fd = new FormData($('form')[0]);
+                fd.append('date',$('#testico').val())
+                fd.append('content',editor.txt.html())
+                fd.append('id',window.location.href.split('=')[1])
+                // fd.append('state',btnText)
                 // console.log(fd);
                 $.ajax({
                     // 用户编辑
-                    url: BigNew.user_publish,
+                    url: BigNew.article_edit,
                     type: 'post',
                     dataType: 'json',
                     data: fd,
@@ -133,17 +184,8 @@
                     contentType: false,
                     success: function (backData) {
                         console.log(backData);
-                        if (backData.code == 200) {
-                            $('#myModal').modal()
-                            $('.modal-body>p').text(backData.msg)
-                            $('#myModal').on('hidden.bs.modal', function (e) {
-                            /*注意点
-                            window: 当前页面 user.html,
-                            如果想要使用 window.parent,这种方法一般用于获取iframe标签的父窗口
-                            */
-                                window.parent.location.reload()
-                            })
-                        }
+                        alert(backData.msg)
+                        window.location.reload()
                     }
                 });
             })
