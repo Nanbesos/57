@@ -115,7 +115,7 @@
                 type: 'get',
                 dataType: 'json',
                 success: function (backData) {
-                    console.log(backData);
+                    // console.log(backData);
                     $('select').html(template('categoryId', backData))
                 }
             });
@@ -124,6 +124,28 @@
                 console.log(file);
                 // var url=URL.createObjectURL(file)
                 $('.article_cover').attr('src', URL.createObjectURL(file))
+            })
+            $('.btn-release,.btn-draft').click(function(e){
+                e.preventDefault()
+                var btnText=$(this).hasClass('btn-edit')?'已发布':'草稿'
+                var fd=new FormData($('form')[0])
+                fd.append('date',$('#testico').val())
+                fd.append('content',editor.txt.html())
+                fd.append('state',btnText)
+                $.ajax({
+                    url:BigNew.article_publish,
+                    type:'post',
+                    dataType:'json',
+                    data:fd,
+                    // 过程数据 
+                    processData:false,
+                    // 内容类型
+                    contentType:false,
+                    success: function(backData){
+                        console.log(backData);
+                        alert(backData.msg)
+                    }
+                });
             })
         })
     </script>

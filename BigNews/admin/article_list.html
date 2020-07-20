@@ -175,17 +175,19 @@
             // 获取删除按钮
             $('body').on('click', '.delete', function () {
                 console.log($(this).attr('data-id'));
-                // $.ajax({
-                //     url:BigNew.category_delete,
-                //     type:'post',
-                //     dataType:'json',
-                //     data:{
-                //         id:$(this).attr('data-id')
-                //     },
-                //     success: function(backData){
-                //         console.log(backData);
-                //     }
-                // });
+                var deleteId=$(this).attr('data-id')
+                $.ajax({
+                    url:BigNew.article_delete,
+                    type:'post',
+                    dataType:'json',
+                    data:{
+                        id:deleteId
+                    },
+                    success: function(backData){
+                        console.log(backData);
+                        alert(backData.msg)
+                    }
+                });
             })
         })
     </script>

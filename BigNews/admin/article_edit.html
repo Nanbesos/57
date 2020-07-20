@@ -143,7 +143,7 @@
                     id: window.location.href.split('=')[1]
                 },
                 success: function (backData) {
-                    // console.log(backData);
+                    console.log(backData);
                     $('.title').val(backData.data.title)
                     $('.article_cover').attr('src', backData.data.cover)
                     $('select').val(backData.data.categoryId)
@@ -166,7 +166,7 @@
             })
             $('.btn-edit,.btn-draft').click(function (e) {
                 e.preventDefault()
-                var btnText=$(this).hasClass('btn-edit')?'发表':'草稿'
+                var btnText=$(this).hasClass('btn-edit')?'已发布':'草稿'
                 // console.log(btnText);
                 var fd = new FormData($('form')[0]);
                 fd.append('date',$('#testico').val())
