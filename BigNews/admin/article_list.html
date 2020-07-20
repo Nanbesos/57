@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="./css/iconfont.css">
     <link rel="stylesheet" href="./css/main.css">
     <script src="./libs/jquery-1.12.4.min.js"></script>
+    <!-- 导入分页插件 -->
+    <script src="./libs/jquery.twbsPagination.js"></script>
     <!-- 引入模板引擎js文件 -->
     <script src="./libs/template-web.js"></script>
 </head>
@@ -69,6 +71,8 @@
                 </tbody>
             </table>
             <div class="row text-center">
+                <!-- 导入分页插件    -->
+                <ul id="pagination" class="pagination-sm"></ul>
             </div>
         </div>
     </div>
@@ -118,19 +122,58 @@
                     type: 'get',
                     dataType: 'json',
                     data: {
-                        type:$('#selCategory').val(),
-                        state:$('#selStatus').val(),
-                        page:1,
-                        perpage:100,
+                        type: $('#selCategory').val(),
+                        state: $('#selStatus').val(),
+                        page: 1,
+                        perpage: 10,
                     },
                     success: function (backData) {
-                        // console.log(backData);
-                        $('tbody').html(template('article_query',backData))
+                        console.log(backData);
+                        $('tbody').html(template('article_query', backData))
+                        // 加载分页插件
+                        // (1)先销毁旧的插件
+                        $('#pagination').twbsPagination('destroy');
+                        // (2)重新开始加载
+                        $('#pagination').twbsPagination({
+                            totalPages: backData.data.totalPage,//总页数
+                            // console.log(startPage);: 1,//起始页
+                            visiblePages: 6,//可见页数
+                            first: '首页',
+                            prev: '上一页',
+                            next: '下一页',
+                            last: '尾页',
+                            onPageClick: function (event, page) {//页码点击事件
+                                // $('#page-content').text('Page ' + page);
+                                // console.log(page);//当前点击页   
+                                getArticleList(page)
+                            }
+                        });
                     }
+
                 });
             })
+            // 进入页面默认加载一次列表
             $('#btnSearch').click()
-            $('body').on('click','.delete',function(){
+
+            // 设置分页按钮请求方法
+            function getArticleList(page){
+                $.ajax({
+                    url:BigNew.article_query,
+                    type:'get',
+                    dataType:'json',
+                    data:{
+                        type:$('#selCategory').val(),
+                        state:$('#selStatus').val(),
+                        page:page,
+                        perpage:10
+                    },
+                    success: function(backData){
+                        $('tbody').html(template('article_query', backData))
+                    }
+                });
+            }
+            // 获取删除按钮
+            $('body').on('click', '.delete', function () {
                 console.log($(this).attr('data-id'));
                 // $.ajax({
                 //     url:BigNew.category_delete,
