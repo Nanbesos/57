@@ -172,6 +172,7 @@
                 fd.append('date',$('#testico').val())
                 fd.append('content',editor.txt.html())
                 fd.append('id',window.location.href.split('=')[1])
+                fd.append('state',btnText)
                 // fd.append('state',btnText)
                 // console.log(fd);
                 $.ajax({
@@ -185,7 +186,7 @@
                     success: function (backData) {
                         console.log(backData);
                         alert(backData.msg)
-                        window.location.reload()
+                        window.history.back()
                     }
                 });
             })

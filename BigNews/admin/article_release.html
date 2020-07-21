@@ -127,7 +127,7 @@
             })
             $('.btn-release,.btn-draft').click(function(e){
                 e.preventDefault()
-                var btnText=$(this).hasClass('btn-edit')?'已发布':'草稿'
+                var btnText=$(this).hasClass('btn-release')?'已发布':'草稿'
                 var fd=new FormData($('form')[0])
                 fd.append('date',$('#testico').val())
                 fd.append('content',editor.txt.html())
@@ -144,6 +144,7 @@
                     success: function(backData){
                         console.log(backData);
                         alert(backData.msg)
+                        window.location.href='./article_list.html'
                     }
                 });
             })

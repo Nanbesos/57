@@ -186,8 +186,14 @@
                     success: function(backData){
                         console.log(backData);
                         alert(backData.msg)
+                        window.location.reload()
                     }
                 });
+            })
+            // console.log($('.leve102>li:eq(1)',window.parent.document));
+            // 点击右上角发布按钮 触发左侧 发布文章 a标签的注册事件(点击高亮)
+            $('#release_btn').click(function(){
+                $('.level02>li:eq(1)',window.parent.document).click()
             })
         })
     </script>
