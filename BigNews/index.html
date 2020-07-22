@@ -27,24 +27,24 @@
     <div class="menu_con">
         <div class="menu">
             <div class="menu_collapse fl">
-                <a href="javascript:;" class="level_one"><i class="fa fa-list-ul"></i>全部分类</a>
+                <a href="./list.html" class="level_one"><i class="fa fa-list-ul"></i>全部分类</a>
                 <ul class="level_two">
-                    <li class="up"></li>
+                    <!-- <li class="up"></li>
                     <li><a href="./list.html">最 新</a></li>
                     <li><a href="./list.html">科 技</a></li>
                     <li><a href="./list.html">股 市</a></li>
                     <li><a href="./list.html">商 品</a></li>
                     <li><a href="./list.html">外 汇</a></li>
-                    <li><a href="./list.html">公 司</a></li>
+                    <li><a href="./list.html">公 司</a></li> -->
                 </ul>
             </div>
             <ul class="left_menu fl">
-                <li><a href="#">最 新</a></li>
+                <!-- <li><a href="#">最 新</a></li>
                 <li><a href="#">科 技</a></li>
                 <li><a href="#">股 市</a></li>
                 <li><a href="#">商 品</a></li>
                 <li><a href="#">外 汇</a></li>
-                <li><a href="#">公 司</a></li>
+                <li><a href="#">公 司</a></li> -->
             </ul>
             <ul class="right_menu fr">
                 <li><a href="#">科技专题</a></li>
@@ -241,18 +241,18 @@
     {{/each}}
     </script>
     <!-- 2.文章类型 -->
-    <script id="level_two" type="text/html">
-        <li class="up"></li>
-        {{each data v}}
-        <li><a href="./list.html?id={{v.id}}">{{v.name}}</a></li>
-        {{/each}}
-    </script>
+<script id="level_two" type="text/html">
+    <li class="up"></li>
+    {{each data v}}
+    <li><a href="./list.html?id={{v.id}}">{{v.name}}</a></li>
+    {{/each}}
+</script>
     <!-- 3.最新资讯 -->
     <script id="common_news" type="text/html">
     {{each data v}}
     <div class="common_news_list">
-        <a href="./aticle.html?id={{v.id}}" class="list_pic"><img src="{{v.cover}}" alt=""></a>
-        <h4><a href="./aticle.html?id={{v.id}}">{{v.title}}</a></h4>
+        <a href="./article.html?id={{v.id}}" class="list_pic"><img src="{{v.cover}}" alt=""></a>
+        <h4><a href="./article.html?id={{v.id}}">{{v.title}}</a></h4>
         <p>{{@ v.intro}}
         </p>
         <div class="new_info">
@@ -294,6 +294,8 @@
             <li><a href="javascript:;">{{v.intro}}</a></li>
         {{/each}}
     </script>
+    
+</script>
     <script>
         // 1.首页焦点图
         $.ajax({
@@ -313,6 +315,7 @@
             success: function (backData) {
                 // console.log(backData);
                 $('.level_two').html(template('level_two', backData))
+                $('.left_menu').html(template('level_two', backData))
             }
         });
         // 3.最新资讯
@@ -351,10 +354,11 @@
             type:'get',
             dataType:'json',
             success: function(backData){
-                console.log(backData);
+                // console.log(backData);
                 $('.common_wrap:eq(2)>ul').html(template('common_wrap3',backData))
             }
         });
+        
     </script>
 </body>
 
